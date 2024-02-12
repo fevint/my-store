@@ -2,12 +2,16 @@ import Link from "next/link";
 import styles from "./Register.module.scss";
 import { push } from "firebase/database";
 import { useRouter } from "next/router";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 
 const RegisterView = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const { push } = useRouter();
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
+    setError("");
     const form = event.target as HTMLFormElement;
     const data = {
       email: form.email.value,
@@ -25,15 +29,19 @@ const RegisterView = () => {
     });
     if (result.status === 200) {
       form.reset();
+
+      setIsLoading(false);
       push("/auth/login");
     } else {
-      console.log("Something went wrong");
+      setIsLoading(false);
+      setError("Email is already registered");
     }
   };
 
   return (
     <div className={styles.register}>
       <h1 className={styles.register__title}>Register</h1>
+      {error && <p className={styles.register__error}>{error}</p>}
       <div className={styles.register__form}>
         <form onSubmit={handleSubmit}>
           <div className={styles.register__form__item}>
@@ -74,7 +82,7 @@ const RegisterView = () => {
             ></input>
           </div>
           <button type="submit" className={styles.register__form__button}>
-            register
+            {isLoading ? "Loading..." : "Register"}
           </button>
         </form>
       </div>
