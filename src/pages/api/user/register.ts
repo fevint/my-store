@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { signUp } from "@/lib/firebase/service";
-import { stat } from "fs";
+import { signUp } from "@/services/auth/services";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +10,7 @@ export default async function handler(
       if (status) {
         res.status(200).json({ status: true, message: "Success" });
       } else {
-        res.status(400).json({ status: false, message: "Gagal" }); 
+        res.status(400).json({ status: false, message: "Gagal" });
       }
     });
   } else {
