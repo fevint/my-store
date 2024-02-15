@@ -21,9 +21,7 @@ export async function signUp(
       userData.role = "member";
     }
     userData.password = await bcrypt.hash(userData.password, 10);
-
     userData.created_ad = new Date();
-
     userData.updated_at = new Date();
 
     addData("users", userData, (result: boolean) => callback(result));
@@ -44,6 +42,9 @@ export async function loginWithGoogle(
   data: {
     email: string;
     role?: string;
+    password?: string;
+    created_ad?: Date;
+    updated_at?: Date;
   },
   callback: Function
 ) {
@@ -53,8 +54,10 @@ export async function loginWithGoogle(
     callback(user[0]);
   } else {
     data.role = "member";
-
-    addData("users", data, (result: boolean) => {
+    data.created_ad = new Date();
+    data.updated_at = new Date();
+    data.password = "";
+    await addData("users", data, (result: boolean) => {
       if (result) {
         callback(data);
       }
